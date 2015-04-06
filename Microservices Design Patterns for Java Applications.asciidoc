@@ -1,4 +1,4 @@
-= _Microservices_ Design Patterns for _Java_ Applications
+= _Microservices_ Design Patterns for _Java Applications_
 Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]

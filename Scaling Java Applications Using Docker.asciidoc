@@ -1,4 +1,4 @@
-= _Scaling_ Java Apps using _Docker_
+= Scaling _Java Applications_ using _Docker_
 Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]

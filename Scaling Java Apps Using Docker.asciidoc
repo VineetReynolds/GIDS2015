@@ -1,0 +1,21 @@
+= _Scaling_ Java Apps using _Docker_
+Vineet Reynolds; Red Hat
+:license: CC BY-SA 4.0
+include::attributes.adoc[]
+
+[.topic.intro]
+== Who am I ?
+
+== !
+
+*What does this talk cover ?*
+
+[.incremental]
+* 
+* 
+
+[.topic.ending, hrole="name"]
+== !
+
+[.footer]
+Questions?

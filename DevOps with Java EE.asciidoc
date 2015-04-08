@@ -1,4 +1,9 @@
 = _DevOps_ with _Java EE_
+////
+Techniques such as automated builds and CI/CD allow software to be developed to a high standard and easily packaged and deployed to test environments, resulting in the ability to rapidly, reliably and repeatedly push out enhancements and bug fixes to customers at low risk and with minimal manual overhead. What container-agnostic tools are available for testing and CI/CD of a Java EE application?
+
+This talk will start with how to package Java EE application "operating environment" such as Operating System, JVM, Database, dependencies, and other configuration in a reusable format, such as Docker. It explains how to replicate the environment for development, testing, staging, and production minimizing the impedance mismatch between them. A quick overview of Arquillian and how it helps in automated testing across multiple Java EE containers is shown. How functional testing, code coverage, performance and other aspects for going in to production will be discussed. Using Arquillian against Docker containers will be explained as well. Finally, configuring Jenkins for Continuous Integration and setting up deployment pipelines will show how to take an application from push-to-production and achieve almost 100% automation.
+////
 Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]

@@ -1,0 +1,25 @@
+= Scaling _Java Applications_ using _Docker_
+////
+Once you start using Docker containers, one of the next steps is to scale and cluster containers across multiple hosts. Applications however need to be designed to take advantage of the scaling and cluster management features afforded in the Docker ecosystem. A Docker container is expected to run only a single process. This model shines when scaling out the app to meet performance and availability guarantees.
+This talk explores the constraints imposed on developers by the single process model. It will start with a demo of clustering a Java EE app using Docker and Kubernetes. The talk will proceed to cover features of Java application servers, notably that of cluster node discovery, that aids in scaling containerized Java apps. It explains how configuration management should be carefully addressed to avoid issues arising from the use of ephemeral stores. Finally it would delve into how the app can magically autoscale through resizing the cluster on varying loads.
+////
+Vineet Reynolds; Red Hat
+:license: CC BY-SA 4.0
+include::attributes.adoc[]
+
+[.topic.intro]
+== Who am I ?
+
+== !
+
+*What does this talk cover ?*
+
+[.incremental]
+* 
+* 
+
+[.topic.ending, hrole="name"]
+== !
+
+[.footer]
+Questions?

@@ -1,18 +1,146 @@
 = Getting Started with _OpenShift_ v3
+////
+OpenShift is Red Hat's open source PaaS platform. OpenShift v3 (due to be released this year) will provide a holistic experience on running your microservices using Docker and Kubernetes. All the work is done in the open source at OpenShift Origin. OpenShift v3 uses a new platform stack that is using plenty of community projects where Red Hat contributes such as Fedora, Centos, Docker, Project Atomic, Kubernetes, and OpenStack.
+
+This talk will explain how to get started with OpenShift v3. Attendees will learn how to take a simple Java EE application and get it running on OpenShift v3. The talk will also explain how to port existing Docker and Kubernetes applications to OpenShift v3. and the complete push-to-production lifecycle. The talk will also show how to dynamically scale applications and leverage self-healing functions of Kubernetes in OpenShift.
+////
 Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]
 
-[.topic.intro]
-== Who am I ?
+
+== !
+
+[.statement]
+Who am I ?
 
 == !
 
 *What does this talk cover ?*
 
 [.incremental]
-* 
-* 
+* Docker and Kubernetes
+* OpenShift v3
+
+== !
+
+[.statement]
+*Docker and Kubernetes* +
+for the uninitiated
+
+[.topic.source]
+== Containers
+
+* Provide a light-weight _virtualization_ solution
+* Through the use of Linux kernel features -
+ ** cgroups
+ ** namespaces for pid, net, ipc, mnt, uts
+* without requiring a guest OS
+
+[.topic.source]
+== Containers
+
+image:DockerVsVMs.png[Docker vs Virtual Machines]
+
+[.topic.source]
+== Docker
+
+Docker is a shipping container system for code. Consists of - 
+
+* A portable, lightweight runtime and packaging tool (_Docker Engine_)
+* A cloud service for sharing applications and automating workflows (_Docker Hub_)
+
+[.topic.source]
+== Basics of the Docker system
+
+image:basics-of-docker-system.png[Basics of the Docker system,640]
+
+[.topic.source]
+== Changing and Updating images
+
+image:changes-and-updates.png[Changing images and updating them in production,640]
+
+[.topic.source]
+== Kubernetes
+
+* Supports runtime and operational management of containers
+* Describes the intended state of the cluster
+ ** Record links between containers - 'frontend' depends on 'backend'
+ ** Replicate containers onto the desired number of nodes; 'frontend' should always run on X nodes, 'backend' should run only on 1 node
+* Provides self-healing capabilities to repair the cluster to intended state
+
+[.topic.source]
+== Kubernetes
+
+* Solves the _Cluster Container Management_ problem
+ ** the substrate for running containers at scale
+ ** contains just the runtime and operational tools for containers
+ ** Composable system - only enough to enable other use cases
+
+[.topic.source]
+== Concepts - Pods and Containers
+
+* Fundamental unit in the system
+ ** Pod is a group of related containers on the same system
+ ** Each container can be its own image with its own env
+ ** Pods share an IP address and data volumes
+* Pods are "transient"
+ ** Pods should be able to be deleted at any time
+ ** Storage can be detached and reattached elsewhere
+ ** Different pods talk to each other through abstractions
+
+[.topic.source]
+== Concepts - Pods Examples
+
+* Single container - JBoss, MySQL etc.
+* Web server and log parser
+ ** Web server container logs HTTP requests to disk
+ ** Log parser reads from disk and sends summary info elsewhere
+
+[.topic.source]
+== Concepts - Pods (contd.)
+
+image:pods.png[Pods,640]
+
+
+[.topic.source]
+== OpenShift
+
+OpenShift adds
+
+* Ability to build, manage, and deliver app descriptions at scale
+* Turning source code into new deployable components
+* Lifecyle to applications - Build, deploy, manage, promote
+
+[.topic.source]
+== OpenShift - What is an app?
+
+* One or more set of pods
+ ** JBoss, MySQL, Redis, ActiveMQ, Backend Workers, Frontends
+* Linked together by services
+ ** Edge router for myapp.com -> JBoss frontend pods
+ ** JBoss frontend pods -> backend service
+ ** backend service -> PHP pods
+ ** PHP pods -> mysql service
+ ** mysql service -> MySQL pod with attached storage
+
+[.topic.source]
+== OpenShift
+
+* Turning source code into new deployable components
+* Lifecyle to applications - Build, deploy, manage, promote
+
+== !
+
+[.statement]
+Getting started with +
+*OpenShift*
+
+== !
+
+[.statement]
+Getting started with +
+*OpenShift*
 
 [.topic.ending, hrole="name"]
 == !

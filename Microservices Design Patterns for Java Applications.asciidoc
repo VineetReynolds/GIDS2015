@@ -1,4 +1,10 @@
 = _Microservices_ Design Patterns for _Java Applications_
+////
+Microservices allow to decompose a monolithic application into cohesive and multiple decoupled services. Each service is running in its own process and communicates using lightweight mechanisms, such as HTTP API. These services are built around business capabilities or functional decomposition. Microservice also enables true polyglot architecture - both in terms of language and data. It truly allows you to employ the right tool for the right job. Each service is independently deployable and lends very well to fully automated deployment machinery.
+
+Can you take an existing Java EE application and decompose it into microservices? What tools are required to enable CI/CD? What are different design patterns for microservices? What tools do you need to manage such services? Is the complexity being pushed around from service implementation to orchestration?
+This talk will explain some of these concerns and provide guidance on how to leverage microservices in your Java applications.
+////
 Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]

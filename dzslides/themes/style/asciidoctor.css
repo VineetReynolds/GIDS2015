@@ -34,7 +34,7 @@ html, .view body {
 }
 
 body, .view section {
-  background: #ffffff;
+  background: #dddddd;
   font-size: 17px;
   line-height: 1;
 }
@@ -293,13 +293,14 @@ kbd kbd:first-child { margin-left: 0; }
 kbd kbd:last-child { margin-right: 0; }
 
 section ul {
-  list-style: none;
-  font-size: 3em;
+  /* Modify to ensure list-style is not none, and font-size is 2.5 em, with a left margin of 1em */
+  font-size: 2em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #1A6074;
+  color: #666666;
   text-align: right;
   margin-bottom: 1em;
+  margin-left: 1em;
 }
 
 section ul.variants {
@@ -445,7 +446,7 @@ section em, section i {
 }
 
 section strong {
-  color: #BA3925;
+  color: #333333;
 }
 
 section del {

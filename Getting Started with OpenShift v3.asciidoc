@@ -241,7 +241,7 @@ Starts various components
 * Controllers
 
 [.topic.source]
-== The `openshift` executable
+== The state of the cluster
 
 image::openshift_all_in_one.png[OpenShift components,480,role="middle"]
 
@@ -270,11 +270,14 @@ Bind a user `test-admin` to the `view` role
 openshift ex policy add-user view anypassword:test-admin
 ----
 
-* Launch the OpenSHift UI @ `http://localhost:8444/console`
+* Launch the OpenShift UI @ `http://localhost:8444/console`
 * Log in with the `test-admin` user. Specify any password.
 
 [.topic.source]
 == Deploying the registry
+
+* Images to be deployed in production can be hosted in a registry
+* This is available as a Docker image, can be deployed through a command:
 
 [source,console]
 ----
@@ -344,6 +347,8 @@ osc build-logs -n test <BUILD_ID>
 
 [.topic.source]
 == Accessing the application (finally!)
+
+Query for pods and services, once the build is complete
 
 [source,console]
 ----

@@ -40,7 +40,7 @@ for the uninitiated
 [.topic.source]
 == Containers
 
-image:DockerVsVMs.png[Docker vs Virtual Machines]
+image::DockerVsVMs.png[Docker vs Virtual Machines,role="middle"]
 
 [.topic.source]
 == Docker
@@ -53,12 +53,12 @@ Docker is a shipping container system for code. Consists of -
 [.topic.source]
 == Basics of the Docker system
 
-image:basics-of-docker-system.png[Basics of the Docker system,640]
+image::basics-of-docker-system.png[Basics of the Docker system,640,role="middle"]
 
 [.topic.source]
 == Changing and Updating images
 
-image:changes-and-updates.png[Changing images and updating them in production,640]
+image::changes-and-updates.png[Changing images and updating them in production,640,role="middle"]
 
 [.topic.source]
 == Kubernetes
@@ -100,7 +100,49 @@ image:changes-and-updates.png[Changing images and updating them in production,64
 [.topic.source]
 == Concepts - Pods (contd.)
 
-image:pods.png[Pods,640]
+image::pods.png[Pods,640,role="middle"]
+
+
+[.topic.source]
+== Connecting Pods
+
+* Need a way for pod A to talk to pod B
+ ** Option 1: Hardcode IP address
+ ** Option 2: Query the server
+* If there are 10 copies of pod A, which do you use?
+ ** Pick one randomly?
+ ** Load balance!
+* What if it fails?
+ ** Want to have all copies of pod A talk to all copies of pod B
+
+
+[.topic.source]
+== Services
+
+* Abstract a set of pods as a single IP and port
+ ** Each host has a proxy that knows where other pods are
+ ** Simple TCP/UDP load balancing
+ ** No central load balancer (no SPOF)
+* Creates environment variables in other pods
+ ** Like "docker link", but across hosts
+ ** Service named "mysql" gets `MYSQL_HOST` and `MYSQL_PORT`
+
+
+[.topic.source]
+== Services(contd.)
+
+image::services.png[Services,640,role="middle"]
+
+[.topic.source]
+== Why Services?
+
+* Stable endpoint for pods to reference
+ ** Allows list of pods to change dynamically
+* Need a way to know where other pods are
+ ** By *name* (mysql is recognizable)
+ ** Simple service discovery 
+* Lots of other options for service discovery
+ ** The simplest thing that works at scale
 
 
 [.topic.source]
@@ -113,16 +155,27 @@ OpenShift adds
 * Lifecyle to applications - Build, deploy, manage, promote
 
 [.topic.source]
+== OpenShift
+
+OpenShift extends Kubernetes:
+
+* To provide application templates
+ ** Single JSON file to configure Kube resources
+ ** Parameterizable
+* To build images from source code
+ ** Host source code in git repos
+ ** Performs builds and host private Docker images
+ ** Kicks off new builds on updates to git repos
+
+[.topic.source]
 == OpenShift - What is an app?
 
 * One or more set of pods
  ** JBoss, MySQL, Redis, ActiveMQ, Backend Workers, Frontends
 * Linked together by services
  ** Edge router for myapp.com -> JBoss frontend pods
- ** JBoss frontend pods -> backend service
- ** backend service -> PHP pods
- ** PHP pods -> mysql service
- ** mysql service -> MySQL pod with attached storage
+ ** JBoss frontend pods -> MySQL service
+ ** MySQL service -> MySQL pod with attached storage
 
 [.topic.source]
 == OpenShift
@@ -136,11 +189,173 @@ OpenShift adds
 Getting started with +
 *OpenShift*
 
+[.topic.source]
+== Setup
+
+* Setup Docker
+ ** On Fedora
++
+[source,bash]
+----
+sudo yum -y install docker
+----
+ ** On Ubuntu Trusty 14.04
++
+[source,bash]
+----
+wget -qO- https://get.docker.com/ | sh
+----
+ ** Use Boot2Docker on Mac/Windows
+ ** But, using a Linux VM is preferable
+
+[.topic.source]
+== Download OpenShift Binaries
+
+* Download the binaries from GitHub icon:github[]
+ ** https://github.com/openshift/origin/releases/tag/v0.4[0.4 - Beta2] is recommended
+
 == !
 
 [.statement]
-Getting started with +
-*OpenShift*
+*Starting OpenShift*
+
+[.topic.source]
+== The `openshift` executable
+
+Start OpenShift.
+
+[source,bash]
+----
+sudo openshift start &> logs/openshift.log &
+----
+
+[.topic.source]
+== The `openshift` executable
+
+Starts various components
+
+* The Kubernetes master
+* A kubelet
+* The OpenShift master
+* An `etcd` server
+* Controllers
+
+[.topic.source]
+== The `openshift` executable
+
+image::openshift_all_in_one.png[OpenShift components,480,role="middle"]
+
+[.topic.source]
+== Launching the OpenShift UI
+
+Configure the client for TLS
+
+[source,console]
+----
+export KUBECONFIG=`pwd`/openshift.local.certificates/admin/.kubeconfig
+export CURL_CA_BUNDLE=`pwd`/openshift.local.certificates/ca/cert.crt
+sudo chmod +r "$KUBECONFIG"
+----
+
+* The `.kubeconfig` file is used by `osc`.
+* The CA cert is used by `curl`.
+
+[.topic.source]
+== Launching the OpenShift UI
+
+Bind a user `test-admin` to the `view` role
+
+[source,console]
+----
+openshift ex policy add-user view anypassword:test-admin
+----
+
+* Launch the OpenSHift UI @ `http://localhost:8444/console`
+* Log in with the `test-admin` user. Specify any password.
+
+[.topic.source]
+== Deploying the registry
+
+[source,console]
+----
+openshift ex registry --create --credentials="$KUBECONFIG"
+----
+
+[.topic.source]
+== Deploying the registry
+
+Verify the registry is up and running.
+
+[source,console]
+----
+osc describe service docker-registry
+----
+
+[source,console]
+----
+curl `osc get service docker-registry --template="{{ .portalIP }}:{{ .port }}"`
+----
+
+[.topic.source]
+== Creating a new project
+
+* Create a new project
+
+[source,console]
+----
+openshift ex new-project test --display-name="OpenShift 3 Sample" --description="This is an example project to demonstrate OpenShift v3" --admin=anypassword:test-admin
+----
+
+* Submit the application template for processing
+
+[source,console]
+----
+osc process -n test -f application-template-stibuild.json | osc create -n test -f -
+----
+
+[.topic.source]
+== Creating a new project
+
+By now, the following OpenShift entities have been created:
+
+* An OpenShift build config
+* ImageStreams for images used (the base) and created (the production images)
+* DeploymentConfigs to define the deployments after build
+* Services for the deployments performed as output of build
+
+[.topic.source]
+== Building the application
+
+* Trigger a build
+
+[source,console]
+----
+osc start build -n test ruby-sample-build
+----
+
+* Observe the build
+
+[source,console]
+----
+osc get -n test builds
+osc get -n test builds --watch
+osc build-logs -n test <BUILD_ID>
+----
+
+[.topic.source]
+== Accessing the application (finally!)
+
+[source,console]
+----
+osc get -n test pods
+----
+
+[source,console]
+----
+osc get -n test services
+----
+
+The `IP:port` of the frontend can be found in the frontend service.
 
 [.topic.ending, hrole="name"]
 == !

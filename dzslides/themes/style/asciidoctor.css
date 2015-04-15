@@ -34,7 +34,7 @@ html, .view body {
 }
 
 body, .view section {
-  background: #dddddd;
+  background: #ffffff;
   font-size: 17px;
   line-height: 1;
 }
@@ -297,7 +297,7 @@ section ul {
   font-size: 2em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #666666;
+  color: #1A6074;
   text-align: right;
   margin-bottom: 1em;
   margin-left: 1em;
@@ -446,7 +446,7 @@ section em, section i {
 }
 
 section strong {
-  color: #333333;
+  color: #BA3925;
 }
 
 section del {

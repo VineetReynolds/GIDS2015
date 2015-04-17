@@ -33,8 +33,8 @@ for the uninitiated
 
 * Provide a light-weight _virtualization_ solution
 * Through the use of Linux kernel features -
- ** cgroups
- ** namespaces for pid, net, ipc, mnt, uts
+ ** `cgroups` to share/limit hardware resources
+ ** `namespaces` to provide isolation
 * without requiring a guest OS
 
 [.topic.source]

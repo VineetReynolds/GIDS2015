@@ -17,8 +17,99 @@ include::attributes.adoc[]
 *What does this talk cover ?*
 
 [.incremental]
-* 
-* 
+* MicroServices - a brief introduction
+ ** The monolith
+ ** Decomposing monoliths
+* Composing microservices
+ ** Aggregator
+ ** Proxy
+ ** Chained services
+ ** Branch
+ ** Shared data
+ ** Asychronous messaging
+
+[.topic.source]
+== The monolith
+
+[.topic.source]
+== The monolith
+
+[.topic.source]
+== The monolith
+
+* Do they have *advantages* ? Oh, yes.
+ ** Packaged and deployed as a single unit. Relative ease of rolling back from failure.
+ ** Homogenous design - could be a good thing to counter chaos.
+ ** Easy to test - services are always available.
+ ** Simple to develop - single codebase.
+ ** Easy to scale horizontally.
+ ** Organize operations around a single team.
+
+[.topic.source]
+== The monolith
+
+* Do they have *disadvantages* ? Oh, yes, a lot more.
+ ** Long deployment cycles (lasting hours or even days)
+ ** May not use the right framework/tool/language for each domain
+ ** Acquires too many responsibility over time
+
+[.topic.source]
+== Microservices
+
+Characteristics
+
+* Many smaller (fine grained), clearly scoped services
+ ** Single Responsibility Principle (`S` in `SOLID`, but for services)
+ ** Independently managed
+* Clear ownership for each service
+ ** Independently deployable, leading easily to CI+CD
+ ** Typically need/adopt the "DevOps" model
+
+
+[.topic.source]
+== What are Microservices?
+
+* Hipster SOA?
+* Fine-grained SOA?
+* Focus on ESBs in SOA?
+* SOA done right?
+
+[.topic.source]
+== Decomposing the monolith into services
+
+* Verb or usecase - e.g. Checkout UI
+* Noun - e.g. Catalog product service
+* Single Responsible Principle - e.g. Unix utilities
+
+[.topic.source]
+== Aggregator
+
+image::microservices-aggregator-1024x528.png[Aggregator,480,role="middle"]
+
+[.topic.source]
+== Proxy
+
+image::microservices-proxy-1024x525.png[Aggregator,480,role="middle"]
+
+[.topic.source]
+== Chained services
+
+image::microservices-chain-1024x575.png[Aggregator,480,role="middle"]
+
+[.topic.source]
+== Branch
+
+image::microservices-branch-1024x639.png[Branch,480,role="middle"]
+
+[.topic.source]
+== Shared data
+
+image::microservices-branch-shared-data-1024x634.png[Shared data,480,role="middle"]
+
+[.topic.source]
+== Asynchronous messaging
+
+image::microservices-async-messaging-1024x640.png[Asynchronous messaging,480,role="middle"]
 
 [.topic.ending, hrole="name"]
 == !

@@ -31,8 +31,12 @@ include::attributes.adoc[]
 [.topic.source]
 == The monolith
 
+image::monolith-internals.png[Internals of a monolith,480,role="middle"]
+
 [.topic.source]
 == The monolith
+
+image::monolith-deployment.png[Deploying monoliths,480,role="middle"]
 
 [.topic.source]
 == The monolith

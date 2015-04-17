@@ -7,16 +7,174 @@ Vineet Reynolds; Red Hat
 :license: CC BY-SA 4.0
 include::attributes.adoc[]
 
-[.topic.intro]
-== Who am I ?
+
+== !
+
+[.statement]
+Who am I ?
 
 == !
 
 *What does this talk cover ?*
 
 [.incremental]
-* 
-* 
+* Docker and Kubernetes
+* Scaling applications
+
+== !
+
+[.statement]
+*Docker and Kubernetes* +
+for the uninitiated
+
+[.topic.source]
+== Containers
+
+* Provide a light-weight _virtualization_ solution
+* Through the use of Linux kernel features -
+ ** `cgroups` to share/limit hardware resources
+ ** `namespaces` to provide isolation
+* without requiring a guest OS
+
+[.topic.source]
+== Containers
+
+image::DockerVsVMs.png[Docker vs Virtual Machines,role="middle"]
+
+[.topic.source]
+== Docker
+
+Docker is a shipping container system for code. Consists of - 
+
+* A portable, lightweight runtime and packaging tool (_Docker Engine_)
+* A cloud service for sharing applications and automating workflows (_Docker Hub_)
+
+[.topic.source]
+== Basics of the Docker system
+
+image::basics-of-docker-system.png[Basics of the Docker system,640,role="middle"]
+
+[.topic.source]
+== Changing and Updating images
+
+image::changes-and-updates.png[Changing images and updating them in production,640,role="middle"]
+
+[.topic.source]
+== Kubernetes
+
+* Supports runtime and operational management of containers
+* Describes the intended state of the cluster
+ ** Record links between containers - 'frontend' depends on 'backend'
+ ** Replicate containers onto the desired number of nodes; 'frontend' should always run on X nodes, 'backend' should run only on 1 node
+* Provides self-healing capabilities to repair the cluster to intended state
+
+[.topic.source]
+== Kubernetes
+
+* Solves the _Cluster Container Management_ problem
+ ** the substrate for running containers at scale
+ ** contains just the runtime and operational tools for containers
+ ** Composable system - only enough to enable other use cases
+
+[.topic.source]
+== Concepts - Pods and Containers
+
+* Fundamental unit in the system
+ ** Pod is a group of related containers on the same system
+ ** Each container can be its own image with its own env
+ ** Pods share an IP address and data volumes
+* Pods are "transient"
+ ** Pods should be able to be deleted at any time
+ ** Storage can be detached and reattached elsewhere
+ ** Different pods talk to each other through abstractions
+
+[.topic.source]
+== Concepts - Pods Examples
+
+* Single container - JBoss, MySQL etc.
+* Web server and log parser
+ ** Web server container logs HTTP requests to disk
+ ** Log parser reads from disk and sends summary info elsewhere
+
+[.topic.source]
+== Concepts - Pods (contd.)
+
+image::pods.png[Pods,640,role="middle"]
+
+
+[.topic.source]
+== Connecting Pods
+
+* Need a way for pod A to talk to pod B
+ ** Option 1: Hardcode IP address
+ ** Option 2: Query the server
+* If there are 10 copies of pod A, which do you use?
+ ** Pick one randomly?
+ ** Load balance!
+* What if it fails?
+ ** Want to have all copies of pod A talk to all copies of pod B
+
+
+[.topic.source]
+== Services
+
+* Abstract a set of pods as a single IP and port
+ ** Each host has a proxy that knows where other pods are
+ ** Simple TCP/UDP load balancing
+ ** No central load balancer (no SPOF)
+* Creates environment variables in other pods
+ ** Like "docker link", but across hosts
+ ** Service named "mysql" gets `MYSQL_HOST` and `MYSQL_PORT`
+
+
+[.topic.source]
+== Services(contd.)
+
+image::services.png[Services,640,role="middle"]
+
+[.topic.source]
+== Why Services?
+
+* Stable endpoint for pods to reference
+ ** Allows list of pods to change dynamically
+* Need a way to know where other pods are
+ ** By *name* (mysql is recognizable)
+ ** Simple service discovery 
+* Lots of other options for service discovery
+ ** The simplest thing that works at scale
+
+== !
+
+[.statement]
+*Scaling* +
+applications
+
+[.topic.source]
+== Scaling with Replicas
+
+* Replication controllers allow running multiple pods on multiple minions
+* Define the number of pods in the intended state
+* Kubernetes takes care of replicating the pods
+
+[.topic.source]
+== Scaling with Replicas - Problems
+
+* Replicating state
+ ** Transient data - in-memory data grids
+ ** Persistent data - volumes + database services
+* Node discovery in the cluster
+ ** Where do you replicate transient data?
+ ** JBoss EAP handles this with JGroups + Infinispan
+ 
+[.topic.source]
+== Scaling with Replicas - Problems
+
+* External access to the cluster
+ ** Update external load balancers or edge routers with updated cluster state
+ ** What should be done -
+  *** when a container goes down ?
+  *** when a container is added ?
+ ** Cloud providers solve this out of the box - GCE/OpenShift 
 
 [.topic.ending, hrole="name"]
 == !

@@ -9,10 +9,8 @@ Vineet Reynolds; Red Hat
 include::attributes.adoc[]
 
 
-== !
-
-[.statement]
-Who am I ?
+[.topic.intro]
+== Who am I ?
 
 == !
 
@@ -63,11 +61,11 @@ image::changes-and-updates.png[Changing images and updating them in production,6
 [.topic.source]
 == Kubernetes
 
-* Supports runtime and operational management of containers
-* Describes the intended state of the cluster
+* Supports *runtime and operational management of containers*
+* Describes the *intended state of the cluster*
  ** Record links between containers - 'frontend' depends on 'backend'
  ** Replicate containers onto the desired number of nodes; 'frontend' should always run on X nodes, 'backend' should run only on 1 node
-* Provides self-healing capabilities to repair the cluster to intended state
+* Provides self-healing capabilities to *repair the cluster to intended state*
 
 [.topic.source]
 == Kubernetes
@@ -92,8 +90,8 @@ image::changes-and-updates.png[Changing images and updating them in production,6
 [.topic.source]
 == Concepts - Pods Examples
 
-* Single container - JBoss, MySQL etc.
-* Web server and log parser
+* Single container - *JBoss*, *MySQL* etc.
+* *Web server* and *log parser*
  ** Web server container logs HTTP requests to disk
  ** Log parser reads from disk and sends summary info elsewhere
 
@@ -106,7 +104,7 @@ image::pods.png[Pods,640,role="middle"]
 [.topic.source]
 == Connecting Pods
 
-* Need a way for pod A to talk to pod B
+* Need a way for *pod A to talk to pod B*
  ** Option 1: Hardcode IP address
  ** Option 2: Query the server
 * If there are 10 copies of pod A, which do you use?
@@ -119,7 +117,7 @@ image::pods.png[Pods,640,role="middle"]
 [.topic.source]
 == Services
 
-* Abstract a set of pods as a single IP and port
+* *Abstract a set of pods* as a single IP and port
  ** Each host has a proxy that knows where other pods are
  ** Simple TCP/UDP load balancing
  ** No central load balancer (no SPOF)
@@ -299,6 +297,12 @@ osc describe service docker-registry
 curl `osc get service docker-registry --template="{{ .portalIP }}:{{ .port }}"`
 ----
 
+== !
+
+[.statement]
+*Creating the project*
+on OpenShift
+
 [.topic.source]
 == Creating a new project
 
@@ -313,7 +317,7 @@ openshift ex new-project test --display-name="OpenShift 3 Sample" --description=
 
 [source,console]
 ----
-osc process -n test -f application-template-stibuild.json | osc create -n test -f -
+osc process -n test -f application-template-jeebuild.json | osc create -n test -f -
 ----
 
 [.topic.source]
@@ -333,7 +337,7 @@ By now, the following OpenShift entities have been created:
 
 [source,console]
 ----
-osc start build -n test ruby-sample-build
+osc start-build -n test jee-sample-build
 ----
 
 * Observe the build
@@ -360,7 +364,21 @@ osc get -n test pods
 osc get -n test services
 ----
 
-The `IP:port` of the frontend can be found in the frontend service.
+* The `IP:port` can be found in the frontend and database services.
+* Use the browser to access the frontend, and MySQL workbench to access the database.
+
+
+[.topic.recap]
+== Recap
+
+OpenShift
+====
+* offers a lightweight virtualization solution
+* links various components of your project together
+* stores the intended state of your application for the cluster
+* provides tight-knit integration for devs and ops alike
+====
+
 
 [.topic.ending, hrole="name"]
 == !

@@ -379,6 +379,11 @@ OpenShift
 * provides tight-knit integration for devs and ops alike
 ====
 
+[.topic.source]
+== References
+
+* https://github.com/VineetReynolds/javaee7-hol
+
 
 [.topic.ending, hrole="name"]
 == !

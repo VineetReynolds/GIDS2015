@@ -1,0 +1,9 @@
+FROM jboss/wildfly
+ADD clustering.war /opt/jboss/wildfly/standalone/deployments/clustering.war
+USER root
+RUN chown jboss:jboss /opt/jboss/wildfly/standalone/deployments/clustering.war
+USER jboss
+# Expose the ports we're interested in
+EXPOSE 8080 9990
+CMD ["/opt/jboss/wildfly/bin/standalone.sh","-b=0.0.0.0"]
+

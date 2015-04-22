@@ -20,7 +20,7 @@ include::attributes.adoc[]
 * MicroServices - a brief introduction
  ** The monolith
  ** Decomposing monoliths
-* Composing microservices
+* Patterns
  ** Aggregator
  ** Proxy
  ** Chained services
@@ -41,21 +41,21 @@ image::monolith-deployment.png[Deploying monoliths,480,role="middle"]
 [.topic.source]
 == The monolith
 
-* Do they have *advantages* ? Oh, yes.
- ** Packaged and deployed as a single unit. Relative ease of rolling back from failure.
- ** Homogenous design - could be a good thing to counter chaos.
- ** Easy to test - services are always available.
- ** Simple to develop - single codebase.
- ** Easy to scale horizontally.
- ** Organize operations around a single team.
+* Do they have *advantages* ? Oh yes.
+ ** Packaged and deployed as a _single unit_. Relative ease of rolling back from failure.
+ ** _Homogenous_ design - could be a good thing to counter chaos.
+ ** _Easy_ to test - services are always available.
+ ** _Simple_ to develop - single codebase.
+ ** Easy to _scale_ horizontally.
+ ** _Organize operations_ around a single team.
 
 [.topic.source]
 == The monolith
 
 * Do they have *disadvantages* ? Oh, yes, a lot more.
- ** Long deployment cycles (lasting hours or even days)
- ** May not use the right framework/tool/language for each domain
- ** Acquires too many responsibility over time
+ ** _Long_ deployment cycles (lasting hours or even days)
+ ** May not use the _right_ framework/tool/language for each domain
+ ** Acquires too many _responsibilities_ over time
 
 [.topic.source]
 == Microservices
@@ -73,10 +73,10 @@ Characteristics
 [.topic.source]
 == What are Microservices?
 
-* Hipster SOA?
-* Fine-grained SOA?
-* Focus on ESBs in SOA?
-* SOA done right?
+* Hipster _SOA_?
+* Fine-grained _SOA_?
+* Focus on ESBs in _SOA_?
+* _SOA_ done right?
 
 [.topic.source]
 == Decomposing the monolith into services
@@ -85,10 +85,22 @@ Characteristics
 * Noun - e.g. Catalog product service
 * Single Responsible Principle - e.g. Unix utilities
 
+== !
+
+[.statement]
+*Microservices Patterns*
+
 [.topic.source]
 == Aggregator
 
 image::microservices-aggregator-1024x528.png[Aggregator,480,role="middle"]
+
+[.topic.source]
+== Aggregator
+
+* Similar to an API gateway.
+* Provides a simple interface to a complex system.
+* Can tranform data from downstream services.
 
 [.topic.source]
 == Proxy
@@ -96,9 +108,23 @@ image::microservices-aggregator-1024x528.png[Aggregator,480,role="middle"]
 image::microservices-proxy-1024x525.png[Aggregator,480,role="middle"]
 
 [.topic.source]
+== Proxy
+
+* Similar to the aggregator.
+* Proxies _don't aggregate_; they merely _delegate_ to a downstream service.
+* A smart proxy, may transform data from downstream responses.
+
+[.topic.source]
 == Chained services
 
 image::microservices-chain-1024x575.png[Aggregator,480,role="middle"]
+
+[.topic.source]
+== Chained services
+
+* Commonly used when _business workflows_ are to be modelled in service interactions.
+* Each service adds value in the transaction.
+* Asynchronosity may need to be introduced in long-running transactions; use in combination with _asynchronous messaging_.
 
 [.topic.source]
 == Branch
@@ -106,14 +132,40 @@ image::microservices-chain-1024x575.png[Aggregator,480,role="middle"]
 image::microservices-branch-1024x639.png[Branch,480,role="middle"]
 
 [.topic.source]
+== Branch
+
+* Similar to the _Content-based Router_ pattern.
+* Requests/Messages are routed based on content like URL, headers or request body.
+* Different downstream services exist due to siloed nature of business operations.
+* _Data_ may be siloed, in conjunction with _processing logic_, at downstream services.
+
+[.topic.source]
 == Shared data
 
 image::microservices-branch-shared-data-1024x634.png[Shared data,480,role="middle"]
+
+
+[.topic.source]
+== Shared data
+
+* _Susceptible to mis-use_; can devolve to an anti-pattern.
+* _Locking_ and _transactional semantics_ may be unclear.
+* Much _safer to use_ when semantics are _understood_.
+* Perfect when shared data is _read-only_.
+* _Necessary_ when microservices are strongly coupled to avoid _data duplication_.
 
 [.topic.source]
 == Asynchronous messaging
 
 image::microservices-async-messaging-1024x640.png[Asynchronous messaging,480,role="middle"]
+
+
+[.topic.source]
+== Asynchronous messaging
+
+* Preferred way to _update_ data not _owned_ by a service.
+* Instead, _publish events_ to the owning service.
+* Eventually, leads to patterns like _event sourcing_.
 
 [.topic.ending, hrole="name"]
 == !

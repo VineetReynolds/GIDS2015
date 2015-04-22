@@ -8,23 +8,22 @@ Vineet Reynolds; Red Hat
 include::attributes.adoc[]
 
 
-== !
-
-[.statement]
-Who am I ?
+[.topic.intro]
+== Who am I ?
 
 == !
 
 *What does this talk cover ?*
 
 [.incremental]
-* Docker and Kubernetes
+* Docker
 * Scaling applications
+* Kubernetes
 
 == !
 
 [.statement]
-*Docker and Kubernetes* +
+*Docker* +
 for the uninitiated
 
 [.topic.source]
@@ -55,18 +54,88 @@ Docker is a shipping container system for code. Consists of -
 image::basics-of-docker-system.png[Basics of the Docker system,640,role="middle"]
 
 [.topic.source]
-== Changing and Updating images
+== Let's run a container
 
-image::changes-and-updates.png[Changing images and updating them in production,640,role="middle"]
+* Run a Java EE app in a Docker container
+
+[source,console]
+----
+docker run -d -p 8080:8080 vineetreynolds/badwildflycluster
+----
+
+[.topic.source]
+== Try to address HA
+
+* Run the same image in another Docker container
+
+[source,console]
+----
+docker run -d -p 9080:8080 vineetreynolds/badwildflycluster
+----
+
+== !
+
+[.statement]
+*Defining the cluster*
+
+[.topic.source]
+== Defining the cluster
+
+* First, node discovery
+ ** JBoss EAP handles this with JGroups
+ ** JGroups ensures _nodes are discovered_
+ ** Solutions will be similar for other application servers
+
+[.topic.source]
+== Replicating state
+
+* Then, replicate state to handle failover
+ ** JBoss EAP handles this with Infinispan
+ ** Infinispan ensures atleast _one replica_ for _shared data_
+
+[.topic.source]
+== Running the app at scale
+
+[source,console]
+----
+docker run -d -p 8080:8080 vineetreynolds/wildflycluster
+docker run -d -p 9080:8080 vineetreynolds/wildflycluster
+----
+
+[.topic.source]
+== What about persistent data?
+
+* Use database containers
+ ** Store the data on _volumes mounted on the host_
+* Link database containers to application servers
+ ** Exposes database info to linked containers for usage
+
+Example:
+
+[source,console]
+----
+docker run --name mysqldb -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -e MYSQL_DATABASE=sample -e MYSQL_ROOT_PASSWORD=supersecret -d mysql
+----
+[source,console]
+----
+docker run --name mywildfly --link mysqldb:db -p 8080:8080 -d vineetreynolds/wildflycluster
+----
+
+== !
+
+[.statement]
+This is now looking +
+*fragile !*
+
 
 [.topic.source]
 == Kubernetes
 
-* Supports runtime and operational management of containers
-* Describes the intended state of the cluster
+* Supports _runtime and operational management of containers_
+* Describes the _intended state of the cluster_
  ** Record links between containers - 'frontend' depends on 'backend'
  ** Replicate containers onto the desired number of nodes; 'frontend' should always run on X nodes, 'backend' should run only on 1 node
-* Provides self-healing capabilities to repair the cluster to intended state
+* Provides _self-healing capabilities_ to repair the cluster to intended state
 
 [.topic.source]
 == Kubernetes
@@ -91,8 +160,8 @@ image::changes-and-updates.png[Changing images and updating them in production,6
 [.topic.source]
 == Concepts - Pods Examples
 
-* Single container - JBoss, MySQL etc.
-* Web server and log parser
+* Single container - _JBoss_, _MySQL_ etc.
+* _Web server_ and _log parser_ (one pod, two containers)
  ** Web server container logs HTTP requests to disk
  ** Log parser reads from disk and sends summary info elsewhere
 
@@ -100,19 +169,6 @@ image::changes-and-updates.png[Changing images and updating them in production,6
 == Concepts - Pods (contd.)
 
 image::pods.png[Pods,640,role="middle"]
-
-
-[.topic.source]
-== Connecting Pods
-
-* Need a way for pod A to talk to pod B
- ** Option 1: Hardcode IP address
- ** Option 2: Query the server
-* If there are 10 copies of pod A, which do you use?
- ** Pick one randomly?
- ** Load balance!
-* What if it fails?
- ** Want to have all copies of pod A talk to all copies of pod B
 
 
 [.topic.source]
@@ -132,22 +188,11 @@ image::pods.png[Pods,640,role="middle"]
 
 image::services.png[Services,640,role="middle"]
 
-[.topic.source]
-== Why Services?
-
-* Stable endpoint for pods to reference
- ** Allows list of pods to change dynamically
-* Need a way to know where other pods are
- ** By *name* (mysql is recognizable)
- ** Simple service discovery 
-* Lots of other options for service discovery
- ** The simplest thing that works at scale
-
 == !
 
 [.statement]
 *Scaling* +
-applications
+applications in Kubernetes
 
 [.topic.source]
 == Scaling with Replicas
@@ -157,24 +202,89 @@ applications
 * Kubernetes takes care of replicating the pods
 
 [.topic.source]
-== Scaling with Replicas - Problems
+== The Kubernetes solution
 
-* Replicating state
- ** Transient data - in-memory data grids
- ** Persistent data - volumes + database services
-* Node discovery in the cluster
- ** Where do you replicate transient data?
- ** JBoss EAP handles this with JGroups + Infinispan
- 
+.clustering-controller.json
+[source,json]
+----
+        ....
+        "podTemplate": {
+            "desiredState": {
+                "manifest": {
+                    "id": "wildfly",
+                    "version": "v1beta1",
+                    "containers": [
+                        {
+                            "image": "vineetreynolds/wildflycluster",
+                            "name": "wildfly-container",
+        ....
+----
+
+[.topic.source]
+== The Kubernetes solution
+
+How many replicas?
+
+.clustering-controller.json
+[source,json]
+----
+    ....
+    "desiredState": {
+        "replicas": 2,
+        "replicaSelector": {
+            "name": "wildfly"
+        },
+    ....
+----
+
+[.topic.source]
+== The Kubernetes solution
+
+Creating the replica
+
+[source,console]
+----
+kubectl create -f clustering-controller.json
+----
+
+== !
+
+[.statement]
+Where's +
+*the catch?*
+
 [.topic.source]
 == Scaling with Replicas - Problems
 
 * External access to the cluster
- ** Update external load balancers or edge routers with updated cluster state
+ ** Pods are transient, and therefore ...
+ ** Update _external load balancers_ or _edge routers_ with _updated cluster state_
  ** What should be done -
-  *** when a container goes down ?
-  *** when a container is added ?
- ** Cloud providers solve this out of the box - GCE/OpenShift 
+  *** when a container goes down ? _Notify_ the load balancer
+  *** when a container is added ? _Notify_ the load balancer
+ ** Cloud providers solve this out of the box - GCE/OpenShift
+ ** Refer the `createExternalLoadBalancer` flag for Kube services
+
+== !
+
+[.statement]
+*Autoscaling*
+
+[.topic.source]
+== Autoscaling
+
+* Applications experience _peaks and valleys in usage_
+* Operators _scale up_ resources _on demand_
+* Currently, a feature in progress in Kubernetes
+* Resource scaling will be _driven by data_ from input sources
+* Scope is _horizontal scaling_ for now
+
+[.topic.source]
+== Autoscaling
+
+* Scaling based on _traffic_
+* Scaling based on _predictive analysis_
+* Scaling based on arbitrary data points - _job execution time_, _number of sessions_ etc.
 
 [.topic.ending, hrole="name"]
 == !
